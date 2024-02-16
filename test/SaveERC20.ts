@@ -67,5 +67,18 @@ describe("SaveERC20 Test", function () {
       const balance = await saveToken.checkUserBalance(owner.address);
       expect(balance).to.equal(amountToDeposit);
     });
+    it("money can be withdrawn by owner", async () => {
+      const { w3xToken, saveToken, user1, user2, amountToDeposit } =
+        await loadFixture(deployERC20Token);
+      const erc20Minted = 1000;
+      await w3xToken.transfer(user2.address, erc20Minted);
+
+      const balanceof = await w3xToken.balanceOf(user2.address);
+      const balanceof1 = await w3xToken.balanceOf(user1.address);
+
+      await approveERC20(user2, saveToken.target, amountToDeposit); //Approve Contract
+      const address2Signer = await ethers.getSigner(user2.address);
+      await saveToken.connect(address2Signer).deposit(amountToDeposit);
+    });
   });
 });
